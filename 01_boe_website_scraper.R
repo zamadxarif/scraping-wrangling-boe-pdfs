@@ -1,22 +1,11 @@
 ## Libraries ---------------------------------------------------------------
-library(boeWebConnectr)
 library(tidyverse)
 library(rvest)
-library(stringi)
-library(stringr)
-library(httr)
-library(tm)
-
-## Configure proxy server for scraping -------------------------------------
-
-## See Analytical 7355570v5 for further details on scraping from bank laptops
-boe_web_config()
-# unset_boe_web_config() # Use this to restore default settings
 
 ## Scraper -----------------------------------------------------------------
 
 ## Set url for prudential regulation sitemap. This is used to gather url data for released docs.
-page <- read_html(GET("https://www.bankofengland.co.uk/sitemap/prudential-regulation"))
+page <- read_html("https://www.bankofengland.co.uk/sitemap/prudential-regulation")
 
 ## Gather vector of urls on the page for every document
 
@@ -43,31 +32,18 @@ SoP_release_title <- page %>% html_nodes(".list-links__item:nth-child(21) .list-
   html_text() %>% stri_trim() %>% stri_sub(1, -12) %>% stri_trim() %>% ## Extract text and remove (pdf 12mb) text from end
   str_replace(regex("[[:punct:]]"), "-") ## replace special characters with hyphen
 
-## Download and save each pdf document - Save in different folders
+## Download and save each pdf document - Set directory if you wish to save in different folders
 
-setwd("W:/PRA_Economic_Analysis/Barriers to Growth/Thresholds/Threshold tracker/Data/SupervisoryStatements")
 SS_release_home_url %>% 
   walk2(., basename(.), download.file, mode = "wb",quiet = T) ## change 'quiet=T' to 'quiet=F' if you wish to see status bar
 
-setwd("W:/PRA_Economic_Analysis/Barriers to Growth/Thresholds/Threshold tracker/Data/PolicyStatements")
 PS_release_home_url %>% 
   walk2(., basename(.), download.file, mode = "wb",quiet = T) ## change 'quiet=T' to 'quiet=F' if you wish to see status bar
 
-setwd("W:/PRA_Economic_Analysis/Barriers to Growth/Thresholds/Threshold tracker/Data/StatementOfPolicy")
 SoP_release_home_url %>% 
   walk2(., basename(.), download.file, mode = "wb",quiet = T) ## change 'quiet=T' to 'quiet=F' if you wish to see status bar
 
 ## To note: Downloading all of these takes around 1-2 hours to complete
 
-## Transform pdf documents into dataframe ---------------------------------------------------------
-
-## Load dataframes
-
-
-# DEVELOPING/TESTING/DIAGNOSTICS -----------------------------------------------------------------
-
-# setwd("W:/PRA_Economic_Analysis/Barriers to Growth/Thresholds/Threshold tracker/Data/SupervisoryStatements")
-# SS_release_home_url[253:302] %>% 
-#   walk2(., basename(.), download.file, mode = "wb",quiet = T) ## change 'quiet=T' to 'quiet=F' if you wish to see status bar
 
 
