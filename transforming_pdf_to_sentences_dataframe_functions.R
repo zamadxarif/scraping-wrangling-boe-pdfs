@@ -13,14 +13,6 @@ library(tm)
 pdf_to_df <- function(pdf_location){
   
   pdf_location <- pdf_location ## inputted pdf file location
-  
-  ##pdf_location <- "C:\\Users\\324910\\Documents\\test\\power-of-direction-april-2013.pdf" ## test file
-  ##pdf_location <- "C:\\Users\\324910\\Documents\\test\\liquidity-and-capital-regime-for-uk-banks-and-building-societies-adjustments.pdf"
-  ##pdf_location <- "C:\\Users\\324910\\Documents\\test\\ss113.pdf"
-  
-  ##pdf_location <- "W:/PRA_Economic_Analysis/Barriers to Growth/Thresholds/Threshold tracker/Data/StatementOfPolicy/deposit-guarantee-scheme-update-august-2020.pdf" ## test file
-  ##pdf_location <- "W:/PRA_Economic_Analysis/Barriers to Growth/Thresholds/Threshold tracker/Data/SupervisoryStatements/ss3415update-dec18.pdf"
-  ##pdf_location <- "W:/PRA_Economic_Analysis/Barriers to Growth/Thresholds/Threshold tracker/Data/PolicyStatements/ps1820.pdf"
 
   ## Extract document content
   doc <- extract_text(pdf_location)
@@ -38,9 +30,8 @@ pdf_to_df <- function(pdf_location){
   main_text <- main_text[which((nchar(main_text) > 320))]
   
   ## clean the text
-  main_text <- gsub("£", "&pound;", main_text) ## keeping the pound currency symbol
+  main_text <- gsub("Â£", "&pound;", main_text) ## keeping the pound currency symbol
   main_text <- iconv(main_text, 'ISO-8859-1', 'ascii', sub='') ## remove weird characters
-  ##main_text <- gsub(regex("(\r\n)[[:alpha:]]+\\s(\r\n)"), "", main_text) ## TODO(ZA): remove heading
   main_text <- gsub("\r\n", "", main_text) ## replace \r\n with empty string
   main_text <- trimws(stri_trim(main_text)) ## remove extra spaces
   
@@ -52,7 +43,7 @@ pdf_to_df <- function(pdf_location){
   # sections <- unlist(str_split(main_text,regex("(  [0-9]+\\.[0-9]+\\s+(?=[A-Z])|  [0-9]+[:alpha:]\\.[0-9]+\\s+(?=[A-Z]))| [0-9]+\\.\\s+(?=[A-Z])")))[-1]
   # sect_nos <- trimws(unlist(str_extract_all(main_text, regex("(  [0-9]+\\.[0-9]+\\s+(?=[A-Z])|  [0-9]+[:alpha:]\\.[0-9]+\\s+(?=[A-Z]))| [0-9]+\\.\\s+(?=[A-Z])"))))
   
-  ## TODO: Identify chapter headings
+  ## TODO(ZA): Identify chapter headings
   #' 
   
   ## Extract Title, Month, Year
@@ -111,16 +102,6 @@ multiple_pdfs_to_df <- function(filepath, document_type){
   return(df)
   
 }
-
-
-
-# DEVELOPING/TESTING/DIAGNOSTICS -----------------------------------------------------------------
-
-# df <- pdf_to_df("C:\\Users\\324910\\Documents\\test\\power-of-direction-april-2013.pdf")
-# 
-# dfs <- multiple_pdfs_to_df("C:\\Users\\324910\\Documents\\test\\",
-#                            "Supervisory Statement")
-
 
 
 
